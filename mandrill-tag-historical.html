@@ -3,10 +3,11 @@
 <head>
   <title>Mandrill</title>
   <style>
-    canvas {
+    .canvas {
       width: 80vw;
       height: 90vh;
       margin: 0 auto;
+      position: relative;
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css" integrity="sha256-IvM9nJf/b5l2RoebiFno92E5ONttVyaEEsdemDC6iQA=" crossorigin="anonymous" />
@@ -20,7 +21,9 @@
   <label for="tag">Tag</label>
   <input id="tag">
   <button id="loadBtn" type="button">Load Tag</button>
-  <canvas id="chart"></canvas>
+  <div class="canvas">
+    <canvas id="chart"></canvas>
+  </div>
 
   <script>
     const colors = JSON.parse(
