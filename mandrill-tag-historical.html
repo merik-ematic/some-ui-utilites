@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>Mandrill</title>
+  <title>Mandrill Tag Historical Graph</title>
   <style>
     .canvas {
       width: 100%;
@@ -26,11 +26,22 @@
   </div>
 
   <script>
-    const colors = JSON.parse(
-      '{"red":"rgb(255, 99, 132)","orange":"rgb(255, 159, 64)","yellow":"rgb(255, 205, 86)","green":"rgb(75, 192, 192)","blue":"rgb(54, 162, 235)","purple":"rgb(153, 102, 255)","grey":"rgb(201, 203, 207)"}'
-      );
+    const keyObj = document.querySelector('input#key');
+    const tagObj = document.querySelector('input#tag');
+    const colors = JSON.parse('{"red":"rgb(255, 99, 132)","orange":"rgb(255, 159, 64)","yellow":"rgb(255, 205, 86)","green":"rgb(75, 192, 192)","blue":"rgb(54, 162, 235)","purple":"rgb(153, 102, 255)","grey":"rgb(201, 203, 207)"}');
     let labels = [];
     let datasets = [];
+
+    let mandrillKey = localStorage.getItem('mandrill_apikey');
+    let mandrillTag = localStorage.getItem('mandrill_tag');
+
+    if (mandrillKey) {
+      keyObj.value = mandrillKey;
+    }
+    if (mandrillTag) {
+      tagObj.value = mandrillTag;
+    }
+    
     window.chartObj = new Chart(document.querySelector('canvas#chart'), {
       type: 'line',
       options: {
@@ -43,14 +54,19 @@
     });
 
     document.querySelector('button#loadBtn').addEventListener('click', async () => {
-      const key = document.querySelector('input#key').value;
-      const tag = document.querySelector('input#tag').value;
+      const key = keyObj.value;
+      const tag = tagObj.value;
 
-      const {
-        data
-      } = await axios.post('https://mandrillapp.com/api/1.0/tags/time-series.json', {
+      if (!key.length || !tag.length) {
+        return;
+      }
+
+      localStorage.setItem('mandrill_apikey', key);
+      localStorage.setItem('mandrill_tag', tag);
+
+      const { data } = await axios.post('https://mandrillapp.com/api/1.0/tags/time-series.json', {
         key,
-        tag
+        tag,
       });
 
       labels = [];
