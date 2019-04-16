@@ -1,1 +1,113 @@
-<script async src="//jsfiddle.net/merik_ematic/earwykxp/4/embed/"></script>
+<html>
+
+<head>
+  <title>Mandrill</title>
+  <style>
+    canvas {
+      width: 90vw;
+      height: 90vh;
+      margin: 0 auto;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css" integrity="sha256-IvM9nJf/b5l2RoebiFno92E5ONttVyaEEsdemDC6iQA=" crossorigin="anonymous" />
+  <stript src="//cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+  <stript src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+</head>
+
+<body>
+  <label for="key">Key</label>
+  <input id="key">
+  <label for="tag">Tag</label>
+  <input id="tag">
+  <button id="loadBtn" type="button">Load Tag</button>
+  <canvas id="chart"></canvas>
+
+  <script>
+    const colors = JSON.parse(
+      '{"red":"rgb(255, 99, 132)","orange":"rgb(255, 159, 64)","yellow":"rgb(255, 205, 86)","green":"rgb(75, 192, 192)","blue":"rgb(54, 162, 235)","purple":"rgb(153, 102, 255)","grey":"rgb(201, 203, 207)"}'
+      );
+    let labels = [];
+    let datasets = [];
+    window.chartObj = new Chart(document.querySelector('canvas#chart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets,
+      },
+    });
+
+    document.querySelector('button#loadBtn').addEventListener('click', async () => {
+      const key = document.querySelector('input#key').value;
+      const tag = document.querySelector('input#tag').value;
+
+      const {
+        data
+      } = await axios.post('https://mandrillapp.com/api/1.0/tags/time-series.json', {
+        key,
+        tag
+      });
+
+      labels = [];
+
+      const sents = [];
+      const rejects = [];
+      const complaints = [];
+      const hard_bounces = [];
+      const soft_bounces = [];
+
+      data.forEach(log => {
+        sents.unshift(log.sent);
+        labels.unshift(log.time);
+        rejects.unshift(log.rejects);
+        complaints.unshift(log.complaints);
+        hard_bounces.unshift(log.hard_bounces);
+        soft_bounces.unshift(log.soft_bounces);
+      });
+
+      datasets = [{
+          backgroundColor: colors.blue,
+          borderColor: colors.blue,
+          label: 'sent',
+          data: sents,
+          fill: false,
+        },
+        {
+          backgroundColor: colors.grey,
+          borderColor: colors.grey,
+          label: 'rejects',
+          data: rejects,
+          fill: false,
+        },
+        {
+          backgroundColor: colors.yellow,
+          borderColor: colors.yellow,
+          label: 'complaints',
+          data: complaints,
+          fill: false,
+        },
+        {
+          backgroundColor: colors.red,
+          borderColor: colors.red,
+          label: 'hard_bounces',
+          data: hard_bounces,
+          fill: false,
+        },
+        {
+          backgroundColor: colors.orange,
+          borderColor: colors.orange,
+          label: 'soft_bounces',
+          data: soft_bounces,
+          fill: false,
+        },
+      ];
+
+      window.chartObj.data = {
+        labels,
+        datasets
+      };
+      window.chartObj.update();
+    });
+  </script>
+</body>
+
+</html>
