@@ -38,8 +38,7 @@
 
   // Removes TOS cookies with past dates.
   Object.keys(cookiesTOSs).forEach((cookiesTOSKey) => {
-    const [, item] = cookiesTOSs[cookiesTOSKey];
-    if (item < new Date().setHours(0, 0, 0, 0)) {
+    if (cookiesTOSs[cookiesTOSKey][1] < new Date().setHours(0, 0, 0, 0)) {
       delete cookiesTOSs[cookiesTOSKey];
     }
   });
