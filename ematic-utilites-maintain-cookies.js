@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable no-undef */
 /* eslint-disable no-param-reassign */
 ((window, document) => {
   const rootDomain = window.location.host.replace('www', '');
@@ -26,20 +25,21 @@
   console.info(cookiesIterations, cookiesTOSs);
 
   // Removes iteration cookies with past dates.
-  cookiesIterations.forEach((cookiesIteration, index) => {
+  Object.keys(cookiesIterations).forEach((cookiesIterationKey) => {
+    const cookiesIteration = cookiesIterations[cookiesIterationKey];
     cookiesIteration.forEach((item) => {
       const date = new Date(item.dont_show_till);
       if (date.setHours(0, 0, 0, 0) < today) {
-        delete cookiesIterations[index];
+        delete cookiesIterations[cookiesIterationKey];
       }
     });
   });
 
   // Removes TOS cookies with past dates.
-  cookiesTOSs.forEach((cookiesTOS, index) => {
-    const [, item] = cookiesTOS;
+  Object.keys(cookiesTOSs).forEach((cookiesTOSKey) => {
+    const [, item] = cookiesTOSs[cookiesTOSKey];
     if (item < new Date().setHours(0, 0, 0, 0)) {
-      delete cookiesTOSs[index];
+      delete cookiesTOSs[cookiesTOSKey];
     }
   });
 
@@ -48,4 +48,5 @@
   setCookie('_v1EmaticSolutionsEI', encodeURIComponent(JSON.stringify(cookiesTOSs)), 354 * 2, rootDomain);
 
   console.info(cookiesIterations, cookiesTOSs);
+// eslint-disable-next-line no-undef
 })(window, document);
