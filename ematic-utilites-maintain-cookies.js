@@ -27,8 +27,9 @@
   // Removes iteration cookies with past dates.
   Object.keys(cookiesIterations).forEach((cookiesIterationKey) => {
     const cookiesIteration = cookiesIterations[cookiesIterationKey];
-    cookiesIteration.forEach((item) => {
-      const date = new Date(item.dont_show_till);
+    Object.keys(cookiesIteration).forEach((cookiesIterationItemKey) => {
+      const cookiesIterationItem = cookiesIteration[cookiesIterationItemKey];
+      const date = new Date(cookiesIterationItem.dont_show_till);
       if (date.setHours(0, 0, 0, 0) < today) {
         delete cookiesIterations[cookiesIterationKey];
       }
