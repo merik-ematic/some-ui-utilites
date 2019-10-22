@@ -21,10 +21,10 @@
       if (email === emailExists) {
         return false;
       }
-    }
-    if (/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/.test(email)) {
-      window.ematics('subscribe', listId, email, mergeFields, callback);
       localStorage.setItem('ematicId', email);
+    }
+    if (/^([\w\.-]+(?:\.[\w-\+]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/.test(email)) {
+      window.ematics('subscribe', listId, email, mergeFields, callback);
     }
     return true;
   };
